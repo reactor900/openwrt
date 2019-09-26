@@ -134,6 +134,10 @@ ramips_setup_interfaces()
 		ucidef_add_switch "switch1" \
 			"1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "0:wan" "6@eth0"
 		;;
+	iptime,a104ns)
+		ucidef_add_switch "switch0" \
+			"1:lan:4" "2:lan:3" "3:lan:2" "4:lan:1" "0:wan" "6@eth0"
+		;;
 	kingston,mlw221)
 		ucidef_set_interface_lan "eth0.2"
 		;;
@@ -239,7 +243,8 @@ ramips_setup_macs()
 		lan_mac=$(mtd_get_mac_ascii u-boot-env LAN_MAC_ADDR)
 		wan_mac=$(mtd_get_mac_ascii u-boot-env WAN_MAC_ADDR)
 		;;
-	edimax,br-6478ac-v2)
+	edimax,br-6478ac-v2|\
+	iptime,a104ns)
 		wan_mac=$(macaddr_add "$(cat /sys/class/net/eth0/address)" 2)
 		;;
 	engenius,esr600)
