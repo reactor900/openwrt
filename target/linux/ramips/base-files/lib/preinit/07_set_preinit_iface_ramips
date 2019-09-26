@@ -4,6 +4,9 @@
 #
 
 ramips_set_preinit_iface() {
+	. /lib/functions.sh
+	local board=$(board_name)
+
 	RT3X5X=$(grep -E "(RT3.5|RT5350|MT7628|MT7688|MT7620|MT7621)" /proc/cpuinfo)
 
 	if [ -n "${RT3X5X}" ]; then
@@ -21,6 +24,15 @@ ramips_set_preinit_iface() {
 			ralink_switchdev=rt305x
 			;;
 		esac
+
+		# For these devices, external ethernet switch should be used
+		# instead of the SoC internal switch.
+		case "$board" in
+		iptime,a1004ns)
+			ralink_switchdev=mt7530
+			;;
+		esac
+
 		swconfig dev $ralink_switchdev set reset 1
 		swconfig dev $ralink_switchdev set enable_vlan 0
 		swconfig dev $ralink_switchdev set apply 1
