@@ -16,6 +16,12 @@ define Build/elecom-header
 		-f $@ -C $(KDIR) v_0.0.0.bin v_0.0.0.md5
 endef
 
+define Build/netis-tail
+	echo -n "$(word 1,$(1))" >> $@
+	echo -n "$(word 2,$(1))-yun" | $(STAGING_DIR_HOST)/bin/mkhash md5 | sed 's/../\\\\x&/g' |\
+		xargs echo -ne >> $@
+endef
+
 define Device/aigale_ai-br100
   MTK_SOC := mt7620a
   IMAGE_SIZE := 7936k
@@ -628,6 +634,17 @@ define Device/netgear_wn3000rp-v3
   SUPPORTED_DEVICES += wn3000rpv3
 endef
 TARGET_DEVICES += netgear_wn3000rp-v3
+
+define Device/netis_wf2770
+  MTK_SOC := mt7620a
+  IMAGE_SIZE := 16064k
+  UIMAGE_NAME := WF2770_0.0.00
+  DEVICE_VENDOR := NETIS
+  DEVICE_MODEL := WF2770
+  DEVICE_PACKAGES := kmod-mt76x0e
+  KERNEL_INITRAMFS := $(KERNEL_DTB) | netis-tail $$(DEVICE_MODEL) $$(UIMAGE_NAME) | uImage lzma
+endef
+TARGET_DEVICES += netis_wf2770
 
 define Device/nexx_wt3020-4m
   MTK_SOC := mt7620n
